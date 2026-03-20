@@ -24,7 +24,7 @@ const MovieCard = ({ movie, onSelect }) => {
         console.log("Toggling Movie:", movie.title, "for User:", uid);
         setIsToggling(true);
         try {
-            const res = await axios.post('http://localhost:5000/users/my-list/toggle', {
+            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/my-list/toggle`, {
                 userId: uid,
                 movieId: movie._id
             });

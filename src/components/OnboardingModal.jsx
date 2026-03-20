@@ -22,7 +22,7 @@ const OnboardingModal = ({ user, onComplete }) => {
     const handleSubmit = async () => {
         try {
             const uid = user.id || user._id; // Handle both token payload and Mongoose object
-            await axios.post('http://localhost:5000/users/onboarding', {
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/onboarding`, {
                 userId: uid,
                 referralSource: referral,
                 preferredGenres: selectedGenres

@@ -53,7 +53,7 @@ const Upload = ({ onUploadSuccess }) => {
     setLoading(true);
     setProgress(0);
     try {
-      await axios.post('http://localhost:5000/upload', formData, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload`, formData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);

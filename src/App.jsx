@@ -108,7 +108,7 @@ function App() {
   const fetchMovies = async () => {
     setMoviesLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/movies');
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/movies`);
       setMovies(response.data);
     } catch (error) {
       console.error('Error fetching movies:', error);

@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
                     // 2. Fetch fresh profile details from server
                     try {
-                        const res = await axios.get(`http://localhost:5000/users/me?userId=${payload.id}`);
+                        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/me?userId=${payload.id}`);
                         if (res.data) {
                             setUser(res.data);
                             if (res.data.onboardingComplete) setIsNewUser(false);
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const res = await axios.post('http://localhost:5000/auth/login', { email, password });
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, { email, password });
         setToken(res.data.token);
         setUser(res.data.user);
         localStorage.setItem('token', res.data.token);
@@ -86,13 +86,13 @@ export const AuthProvider = ({ children }) => {
 
         // Fetch full profile immediately
         const payload = JSON.parse(atob(res.data.token.split('.')[1]));
-        const profileRes = await axios.get(`http://localhost:5000/users/me?userId=${payload.id}`);
+        const profileRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/me?userId=${payload.id}`);
         setUser(profileRes.data);
         setIsNewUser(false); // Returning user
     };
 
     const signup = async (username, email, password, isAdmin = false) => {
-        const res = await axios.post('http://localhost:5000/auth/signup', { username, email, password, isAdmin });
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, { username, email, password, isAdmin });
         localStorage.setItem('token', res.data.token);
         setToken(res.data.token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }) => {
 
     const firebaseSync = async (firebaseUser) => {
         console.log("Syncing Firebase user with backend:", firebaseUser.email);
-        const res = await axios.post('http://localhost:5000/auth/firebase-sync', {
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/firebase-sync`, {
             uid: firebaseUser.uid,
             email: firebaseUser.email,
             displayName: firebaseUser.displayName,
@@ -118,7 +118,7 @@ export const AuthProvider = ({ children }) => {
         // Fetch full profile immediately
         const payload = JSON.parse(atob(res.data.token.split('.')[1]));
         console.log("Fetching full profile for user:", payload.id);
-        const profileRes = await axios.get(`http://localhost:5000/users/me?userId=${payload.id}`);
+        const profileRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/me?userId=${payload.id}`);
         console.log("Profile fetched successfully:", profileRes.data.username);
         setUser(profileRes.data);
         setIsNewUser(res.data.isNewUser); // Set based on backend detection
@@ -129,7 +129,7 @@ export const AuthProvider = ({ children }) => {
         if (uid) {
             console.log("Refreshing user data for:", uid);
             try {
-                const res = await axios.get(`http://localhost:5000/users/me?userId=${uid}`);
+                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/me?userId=${uid}`);
                 console.log("Refreshed user data:", res.data);
                 setUser(res.data);
                 if (res.data.onboardingComplete) {

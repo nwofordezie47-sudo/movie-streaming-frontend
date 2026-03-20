@@ -22,7 +22,7 @@ const MovieDetails = ({ movie, onBack, onPlay }) => {
         setIsToggling(true);
         console.log("Details View - Toggling Movie:", movie.title);
         try {
-            await axios.post('http://localhost:5000/users/my-list/toggle', {
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/my-list/toggle`, {
                 userId: uid,
                 movieId: movie._id
             });

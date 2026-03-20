@@ -12,7 +12,7 @@ const MyList = ({ onSelect }) => {
         const fetchMyList = async () => {
             if (!user) return;
             try {
-                const res = await axios.get(`http://localhost:5000/users/me?userId=${user.id || user._id}`);
+                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/me?userId=${user.id || user._id}`);
                 setList(res.data.myList || []);
             } catch (err) {
                 console.error("Error fetching my list", err);
