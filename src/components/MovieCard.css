@@ -1,0 +1,167 @@
+.movie-card {
+    background-color: var(--bg-surface);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px var(--maroon-glow);
+    z-index: 10;
+}
+
+.movie-card-poster {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.movie-card:hover .movie-card-img {
+    transform: scale(1.1);
+}
+
+.movie-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(10, 10, 10, 0.8) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 10px;
+}
+
+.movie-card:hover .movie-card-overlay {
+    opacity: 1;
+}
+
+.list-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.list-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: white;
+    transform: scale(1.1);
+}
+
+.list-toggle-btn.in-list {
+    background: var(--maroon);
+    border-color: var(--maroon);
+    box-shadow: 0 0 10px var(--maroon-glow);
+}
+
+.movie-card-duration {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+
+.movie-card-info {
+    padding: 1rem;
+    background-color: var(--bg-surface);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.movie-card-title {
+    font-size: 1.1rem;
+    font-family: var(--font-body);
+    color: var(--cream);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.movie-card-rating {
+    color: #46d369;
+    /* Match green */
+    font-weight: 500;
+}
+
+.list-toggle-btn.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.btn-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .movie-card-info {
+        padding: 0.75rem;
+    }
+
+    .movie-card-title {
+        font-size: 0.95rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .movie-card-meta {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-card-info {
+        padding: 0.5rem;
+    }
+
+    .movie-card-title {
+        font-size: 0.85rem;
+    }
+}

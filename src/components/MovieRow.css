@@ -1,0 +1,68 @@
+.movie-row-section {
+    padding: 2rem 4%;
+    position: relative;
+    z-index: 5;
+    /* Keep above hero overlay */
+}
+
+.movie-row-title {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+}
+
+.movie-row-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-color: var(--maroon);
+    border-radius: 2px;
+}
+
+.movie-row-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .movie-row-section {
+        padding: 1.5rem 4%;
+    }
+}
+
+@media (max-width: 768px) {
+    .movie-row-section {
+        padding: 1rem 5%;
+    }
+
+    .movie-row-title {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .movie-row-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-row-container {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.6rem;
+    }
+}
+
+.movie-row-empty {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    padding: 2rem 0;
+}
