@@ -53,7 +53,11 @@ const Upload = ({ onUploadSuccess }) => {
     setLoading(true);
     setProgress(0);
     try {
+      const token = localStorage.getItem('token');
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/upload`, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);
@@ -174,7 +178,7 @@ const Upload = ({ onUploadSuccess }) => {
             />
           </div>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic', textAlign: 'center' }}>
-           
+
           </p>
         </div>
 

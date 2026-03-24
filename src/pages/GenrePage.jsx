@@ -7,7 +7,7 @@ const GenrePage = ({ title, movies, onSelect }) => {
         <div className="genre-page" style={{ padding: '80px 4% 40px', minHeight: '100vh', background: 'var(--bg-primary)' }}>
             <h1 style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: '2.5rem',
+                fontSize: '2.5rem', 
                 marginBottom: '40px',
                 color: 'var(--text-primary)'
             }}>
