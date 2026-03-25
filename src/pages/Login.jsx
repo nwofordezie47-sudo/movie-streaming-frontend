@@ -14,10 +14,13 @@ const Login = () => {
     const { login, firebaseSync } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const closeModal = () => setModalState(s => ({ ...s, isOpen: false }));
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
             await login(email, password);
             navigate('/movies');
@@ -28,6 +31,8 @@ const Login = () => {
                 message: err.response?.data?.message || 'Invalid email or password',
                 type: 'error'
             });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -124,8 +129,12 @@ const Login = () => {
                             <Link to="#" className="forgot-password">Forgot password?</Link>
                         </div>
 
-                        <button type="submit" className="auth-submit">
-                            Sign In
+                        <button type="submit" className="auth-submit" disabled={isLoading || isSocialLoading}>
+                            {isLoading ? (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                                    <div className="btn-spinner"></div> Signing In...
+                                </div>
+                            ) : 'Sign In'}
                         </button>
                     </form>
 

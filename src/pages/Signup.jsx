@@ -16,12 +16,15 @@ const Signup = () => {
     const { signup, firebaseSync } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const closeModal = () => {
         setModalState(s => ({ ...s, isOpen: false }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
             await signup(username, email, password, isAdmin);
             navigate('/movies');
@@ -32,6 +35,8 @@ const Signup = () => {
                 message: err.response?.data?.message || 'An error occurred during signup',
                 type: 'error'
             });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -141,8 +146,12 @@ const Signup = () => {
                             </label>
                         </div>
 
-                        <button type="submit" className="auth-submit">
-                            Create Account
+                        <button type="submit" className="auth-submit" disabled={isLoading || isSocialLoading}>
+                            {isLoading ? (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                                    <div className="btn-spinner"></div> Creating Account...
+                                </div>
+                            ) : 'Create Account'}
                         </button>
                     </form>
 
