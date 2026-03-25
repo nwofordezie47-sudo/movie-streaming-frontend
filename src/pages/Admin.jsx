@@ -10,14 +10,12 @@ const Admin = () => {
     const { user, token } = useContext(AuthContext);
     const navigate = useNavigate();
     
-    const [activeTab, setActiveTab] = useState('upload'); // 'upload' or 'manage'
+    const [activeTab, setActiveTab] = useState('upload');
     const [successMessage, setSuccessMessage] = useState('');
     
-    // Manage Library State
     const [movies, setMovies] = useState([]);
     const [loadingMovies, setLoadingMovies] = useState(false);
     
-    // Modal States
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, movieId: null, title: '' });
     const [editModal, setEditModal] = useState({ isOpen: false, movie: null });
 
@@ -36,7 +34,8 @@ const Admin = () => {
     const fetchMovies = async () => {
         setLoadingMovies(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/movies`);
+            const adminId = user?._id || user?.id;
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/movies?uploadedBy=${adminId}`);
             setMovies(res.data);
         } catch (err) {
             console.error('Failed to fetch movies for admin panel:', err);
@@ -53,7 +52,6 @@ const Admin = () => {
         if (activeTab === 'manage') fetchMovies();
     };
 
-    // Actions
     const handleDeleteClick = (movie) => {
         setDeleteModal({ isOpen: true, movieId: movie._id || movie.id, title: movie.title });
     };
@@ -161,7 +159,7 @@ const Admin = () => {
                         transition: 'all 0.3s ease'
                     }}
                 >
-                    Manage Library
+                    Manage Movies
                 </button>
             </div>
 
