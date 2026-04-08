@@ -57,10 +57,19 @@ const VideoPlayer = ({ src, poster, title }) => {
 
     const toggleFullScreen = () => {
         if (!document.fullscreenElement) {
-            containerRef.current.requestFullscreen().catch(err => {
+            containerRef.current.requestFullscreen().then(() => {
+                if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+                    window.screen.orientation.lock('landscape').catch(err => {
+                        console.log('Orientation lock error:', err);
+                    });
+                }
+            }).catch(err => {
                 console.error(`Error attempting to enable full-screen mode: ${err.message}`);
             });
         } else {
+            if (window.screen && window.screen.orientation && window.screen.orientation.unlock) {
+                window.screen.orientation.unlock();
+            }
             document.exitFullscreen();
         }
     };
