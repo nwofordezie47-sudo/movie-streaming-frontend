@@ -259,7 +259,6 @@ const Admin = () => {
                 type="warning"
             />
 
-            {/* Full Screen Edit Modal */}
             <EditMovieModal 
                 isOpen={editModal.isOpen} 
                 movie={editModal.movie}

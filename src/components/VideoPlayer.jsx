@@ -80,17 +80,24 @@ const VideoPlayer = ({ src, poster, title }) => {
         }
     };
 
+    const getSeekPercentage = (e) => {
+        const rect = containerRef.current.querySelector('.progress-container').getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const pos = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        return pos;
+    };
+
     const handleSeek = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const pos = (e.clientX - rect.left) / rect.width;
+        const pos = getSeekPercentage(e);
         videoRef.current.currentTime = pos * duration;
     };
 
     const handleMouseMoveSeek = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const pos = (e.clientX - rect.left) / rect.width;
+        const pos = getSeekPercentage(e);
         const time = pos * duration;
-        setTooltip({ visible: true, time, x: e.clientX - rect.left });
+        const rect = containerRef.current.querySelector('.progress-container').getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        setTooltip({ visible: true, time, x: clientX - rect.left });
     };
 
     const formatTime = (time) => {
@@ -192,6 +199,8 @@ const VideoPlayer = ({ src, poster, title }) => {
                     className="progress-container"
                     onClick={handleSeek}
                     onMouseMove={handleMouseMoveSeek}
+                    onTouchStart={handleSeek}
+                    onTouchMove={handleSeek}
                     onMouseLeave={() => setTooltip({ ...tooltip, visible: false })}
                 >
                     <div className="progress-bar">

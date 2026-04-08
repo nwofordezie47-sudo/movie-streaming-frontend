@@ -13,6 +13,7 @@ import MyList from './pages/MyList';
 import GenrePage from './pages/GenrePage';
 import MovieDetails from './components/MovieDetails';
 import VideoPlayer from './components/VideoPlayer';
+import { getTransformedVideoUrl } from './utils/cloudinaryUtils';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -176,7 +177,7 @@ function App() {
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem', marginBottom: '10px' }}>{selectedMovie.title}</h2>
           <div style={{ marginTop: '20px', width: '100%', maxWidth: '1200px' }}>
             <VideoPlayer
-              src={selectedMovie.videoUrl}
+              src={getTransformedVideoUrl(selectedMovie.videoUrl)}
               poster={selectedMovie.thumbnailUrl}
               title={selectedMovie.title}
             />

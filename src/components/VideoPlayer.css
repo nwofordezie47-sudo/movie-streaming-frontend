@@ -1,6 +1,7 @@
 .cinematic-player {
     position: relative;
     width: 100%;
+    max-width: 100%;
     aspect-ratio: 16 / 9;
     background-color: #0D0D0D;
     overflow: hidden;
@@ -12,7 +13,8 @@
 
 .video-element {
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-height: 100%;
     display: block;
     cursor: pointer;
 }
@@ -153,13 +155,16 @@
     backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .controls-group {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .spacer {
@@ -245,7 +250,9 @@
     background: none;
     border: none;
     color: #F5F0E8;
-    padding: 8px;
+    padding: 10px;
+    min-width: 44px;
+    min-height: 44px;
     cursor: pointer;
     border-radius: 50%;
     display: flex;
@@ -352,4 +359,51 @@
 
 .cinematic-player:fullscreen .video-element {
     object-fit: contain;
+}
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .video-top-bar {
+        padding: 20px 4% 10px;
+    }
+    
+    .video-title {
+        font-size: 1.2rem;
+    }
+    
+    .big-play-btn {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .time-display {
+        font-size: 0.8rem;
+        margin-left: 5px;
+    }
+    
+    .video-controls-row {
+        gap: 5px;
+    }
+
+    .volume-container {
+        display: none; /* Hide volume on mobile as hardware buttons are preferred */
+    }
+}
+
+@media (max-width: 480px) {
+    .cinematic-player {
+        aspect-ratio: auto;
+        min-height: 210px;
+    }
+    
+    .video-controls-row {
+        padding: 5px 2%;
+    }
+    
+    .skip-btn {
+        display: none; /* Hide skip buttons on very small screens to save space */
+    }
+    
+    .controls-group.left {
+        gap: 5px;
+    }
 }
