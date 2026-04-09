@@ -4,10 +4,33 @@ import { AuthContext } from '../context/AuthContext';
 import { ToastContext } from '../context/ToastContext';
 import './MovieCard.css';
 
+const MovieDetailsSkeleton = () => (
+    <div className="movie-details-view" style={{ padding: '20px 4%', animation: 'fadeIn 0.5s ease' }}>
+        <div className="skeleton skeleton-text short" style={{ height: '40px', marginBottom: '30px' }} />
+        <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
+            <div className="skeleton" style={{ flex: '0 0 300px', height: '450px', borderRadius: '12px' }} />
+            <div style={{ flex: '1', minWidth: '300px' }}>
+                <div className="skeleton skeleton-text medium" style={{ height: '3.5rem', marginBottom: '20px' }} />
+                <div className="skeleton skeleton-text short" style={{ height: '1.2rem', marginBottom: '20px' }} />
+                <div className="skeleton skeleton-text" style={{ height: '1.2rem' }} />
+                <div className="skeleton skeleton-text" style={{ height: '1.2rem' }} />
+                <div className="skeleton skeleton-text" style={{ height: '1.2rem', marginBottom: '30px' }} />
+                <div style={{ display: 'flex', gap: '20px' }}>
+                    <div className="skeleton" style={{ width: '150px', height: '50px' }} />
+                    <div className="skeleton" style={{ width: '150px', height: '50px' }} />
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
 const MovieDetails = ({ movie, onBack, onPlay }) => {
     const { user, refreshUser } = useContext(AuthContext);
     const { showToast } = useContext(ToastContext);
     const [isToggling, setIsToggling] = useState(false);
+
+    if (!movie) return <MovieDetailsSkeleton />;
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const isInList = user?.myList?.some(item => {
         const itemId = item?._id || item;
@@ -37,6 +60,29 @@ const MovieDetails = ({ movie, onBack, onPlay }) => {
             console.error("Error toggling list in details", err);
         } finally {
             setIsToggling(false);
+        }
+    };
+
+    const handleDownload = async () => {
+        if (!movie.videoUrl || isDownloading) return;
+        setIsDownloading(true);
+        try {
+            const response = await fetch(movie.videoUrl);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${movie.title}.mp4`;
+            document.body.appendChild(a); // Append to body to ensure it works in all browsers
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            showToast('Download started', 'success');
+        } catch (err) {
+            console.error("Download failed", err);
+            showToast('Download failed. Ensure your connection is stable.', 'error');
+        } finally {
+            setIsDownloading(false);
         }
     };
 
@@ -105,7 +151,7 @@ const MovieDetails = ({ movie, onBack, onPlay }) => {
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', gap: '20px' }}>
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                         <button
                             onClick={() => onPlay(movie)}
                             style={{
@@ -159,6 +205,42 @@ const MovieDetails = ({ movie, onBack, onPlay }) => {
                                 <>
                                     <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
                                     Add to My List
+                                </>
+                            )}
+                        </button>
+
+                        <button
+                            onClick={handleDownload}
+                            disabled={isDownloading}
+                            style={{
+                                padding: '15px 30px',
+                                background: 'rgba(254, 250, 238, 0.1)',
+                                color: 'var(--cream)',
+                                border: '2px solid rgba(254, 250, 238, 0.3)',
+                                borderRadius: '4px',
+                                fontSize: '1.1rem',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                                transition: 'all 0.2s ease',
+                                opacity: isDownloading ? 0.7 : 1
+                            }}
+                            onMouseOver={(e) => !isDownloading && (e.target.style.background = 'rgba(254, 250, 238, 0.2)')}
+                            onMouseOut={(e) => !isDownloading && (e.target.style.background = 'rgba(254, 250, 238, 0.1)')}
+                        >
+                            {isDownloading ? (
+                                <>
+                                    <div className="btn-spinner" style={{ width: '20px', height: '20px' }}></div>
+                                    Downloading...
+                                </>
+                            ) : (
+                                <>
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                                    </svg>
+                                    Download
                                 </>
                             )}
                         </button>

@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import Upload from '../components/Upload';
 import Modal from '../components/Modal';
 import EditMovieModal from '../components/EditMovieModal';
+import CardSkeleton from '../components/CardSkeleton';
 import axios from 'axios';
 
 const Admin = () => {
@@ -173,7 +174,13 @@ const Admin = () => {
             {activeTab === 'manage' && (
                 <div style={{ width: '100%', maxWidth: '1200px' }}>
                     {loadingMovies ? (
-                        <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-muted)' }}>Loading library...</div>
+                        <div style={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+                            gap: '25px' 
+                        }}>
+                            {[1, 2, 3].map(i => <CardSkeleton key={i} />)}
+                        </div>
                     ) : (
                         <div style={{ 
                             display: 'grid', 

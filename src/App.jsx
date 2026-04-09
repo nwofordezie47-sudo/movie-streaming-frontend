@@ -33,6 +33,31 @@ const shuffleArray = (array) => {
   return shuffled;
 };
 
+const HomeSkeleton = () => {
+  return (
+    <div style={{ padding: '0 0 50px 0', minHeight: '100vh' }}>
+      <div className="skeleton" style={{ height: '70vh', width: '100%', marginBottom: '40px', borderRadius: '0' }} />
+      <div style={{ padding: '0 4%' }}>
+        <div className="skeleton-text medium" style={{ height: '2.5rem', marginBottom: '20px' }} />
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+          gap: '20px',
+          marginBottom: '40px'
+        }}>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+            <div key={i}>
+              <div className="skeleton skeleton-card" style={{ marginBottom: '15px' }} />
+              <div className="skeleton skeleton-text medium" />
+              <div className="skeleton skeleton-text short" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Home = ({ movies, onSelectMovie, onWatchMovie }) => {
   const { user } = useContext(AuthContext);
 
@@ -210,9 +235,9 @@ function App() {
       <Routes>
         <Route path="/" element={user ? <Navigate to="/movies" replace /> : <Login />} />
         <Route path="/login" element={user ? <Navigate to="/movies" replace /> : <Login />} />
-        <Route path="/movies" element={<ProtectedRoute>{renderContent(moviesLoading ? <div style={{ padding: '80px 4%', display: 'flex', justifyContent: 'center' }}><div className="spinner"></div></div> : <Home movies={movies} onSelectMovie={handleSelectMovie} onWatchMovie={handleStartWatch} />)}</ProtectedRoute>} />
-        <Route path="/series" element={<ProtectedRoute>{renderContent(<GenrePage title="Series" movies={movies.filter(m => m.tags?.includes('Series'))} onSelect={handleSelectMovie} />)}</ProtectedRoute>} />
-        <Route path="/new-and-popular" element={<ProtectedRoute>{renderContent(<GenrePage title="New & Popular" movies={movies.filter(m => m.releaseYear === 2026).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))} onSelect={handleSelectMovie} />)}</ProtectedRoute>} />
+        <Route path="/movies" element={<ProtectedRoute>{renderContent(moviesLoading ? <HomeSkeleton /> : <Home movies={movies} onSelectMovie={handleSelectMovie} onWatchMovie={handleStartWatch} />)}</ProtectedRoute>} />
+        <Route path="/series" element={<ProtectedRoute>{renderContent(<GenrePage title="Series" movies={movies.filter(m => m.tags?.includes('Series'))} onSelect={handleSelectMovie} loading={moviesLoading} />)}</ProtectedRoute>} />
+        <Route path="/new-and-popular" element={<ProtectedRoute>{renderContent(<GenrePage title="New & Popular" movies={movies.filter(m => m.releaseYear === 2026).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))} onSelect={handleSelectMovie} loading={moviesLoading} />)}</ProtectedRoute>} />
         <Route path="/my-list" element={<ProtectedRoute>{renderContent(<MyList onSelect={handleSelectMovie} />)}</ProtectedRoute>} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/admin" element={<Admin />} />

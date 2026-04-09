@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import MovieCard from '../components/MovieCard';
+import CardSkeleton from '../components/CardSkeleton';
 
 const MyList = ({ onSelect }) => {
     const { user } = useContext(AuthContext);
@@ -36,7 +37,9 @@ const MyList = ({ onSelect }) => {
             </h1>
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '100px 0' }}>Loading...</div>
+                <div className="movie-grid">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <CardSkeleton key={i} />)}
+                </div>
             ) : list.length > 0 ? (
                 <div className="movie-grid">
                     {list.map(movie => (
