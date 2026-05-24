@@ -16,6 +16,15 @@ export const AuthProvider = ({ children }) => {
                 try {
                     const payload = JSON.parse(atob(storedToken.split('.')[1]));
 
+                    // Migration case: check if the token is an old Firebase token
+                    const isFirebaseToken = payload.firebase || (payload.iss && payload.iss.includes('securetoken.google.com')) || !payload.id;
+                    if (isFirebaseToken) {
+                        console.warn("Old Firebase token format detected, clearing and performing migration logout...");
+                        logout();
+                        setLoading(false);
+                        return;
+                    }
+
                     // Simple expiration check
                     const currentTime = Date.now() / 1000;
                     if (payload.exp && payload.exp < currentTime) {
@@ -102,26 +111,31 @@ export const AuthProvider = ({ children }) => {
         return res.data;
     };
 
-    const firebaseSync = async (firebaseUser) => {
-        console.log("Syncing Firebase user with backend:", firebaseUser.email);
-        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/firebase-sync`, {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            displayName: firebaseUser.displayName,
-            photoURL: firebaseUser.photoURL
-        });
-        console.log("Backend sync response received, setting token...");
-        localStorage.setItem('token', res.data.token);
-        setToken(res.data.token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+    const handleAuthResponse = async (data) => {
+        console.log("Backend response received, setting token...");
+        localStorage.setItem('token', data.token);
+        setToken(data.token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
         // Fetch full profile immediately
-        const payload = JSON.parse(atob(res.data.token.split('.')[1]));
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
         console.log("Fetching full profile for user:", payload.id);
         const profileRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/me?userId=${payload.id}`);
         console.log("Profile fetched successfully:", profileRes.data.username);
         setUser(profileRes.data);
-        setIsNewUser(res.data.isNewUser); // Set based on backend detection
+        setIsNewUser(data.isNewUser);
+    };
+
+    const googleLogin = async (accessToken) => {
+        console.log("Logging in with Google access token...");
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/google`, { accessToken });
+        await handleAuthResponse(res.data);
+    };
+
+    const appleLogin = async (idToken) => {
+        console.log("Logging in with Apple ID token...");
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/apple`, { idToken });
+        await handleAuthResponse(res.data);
     };
 
     const refreshUser = async () => {
@@ -151,7 +165,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, isNewUser, setIsNewUser, login, signup, firebaseSync, logout, loading, refreshUser }}>
+        <AuthContext.Provider value={{ user, token, isNewUser, setIsNewUser, login, signup, googleLogin, appleLogin, logout, loading, refreshUser }}>
             {loading ? (
                 <div className="cinematic-loader">
                     <div className="spinner"></div>

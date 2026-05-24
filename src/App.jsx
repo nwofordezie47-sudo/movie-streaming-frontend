@@ -14,6 +14,7 @@ import GenrePage from './pages/GenrePage';
 import MovieDetails from './components/MovieDetails';
 import VideoPlayer from './components/VideoPlayer';
 import { getTransformedVideoUrl } from './utils/cloudinaryUtils';
+import WelcomeMessage from './components/WelcomeMessage';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -95,6 +96,7 @@ const Home = ({ movies, onSelectMovie, onWatchMovie }) => {
       )}
 
       <main style={{ padding: '0 0 50px 0' }}>
+        <WelcomeMessage />
         {movies.length > 0 ? (
           <>
             <MovieList

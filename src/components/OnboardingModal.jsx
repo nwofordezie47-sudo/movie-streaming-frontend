@@ -4,6 +4,7 @@ import './Modal.css';
 import Stepper, { Step } from './Stepper';
 
 const OnboardingModal = ({ user, onComplete }) => {
+    const [displayName, setDisplayName] = useState(user?.displayName || '');
     const [referral, setReferral] = useState('');
     const [selectedGenres, setSelectedGenres] = useState([]);
 
@@ -24,6 +25,7 @@ const OnboardingModal = ({ user, onComplete }) => {
             const uid = user.id || user._id; // Handle both token payload and Mongoose object
             await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/onboarding`, {
                 userId: uid,
+                displayName: displayName.trim(),
                 referralSource: referral,
                 preferredGenres: selectedGenres
             });
@@ -34,8 +36,9 @@ const OnboardingModal = ({ user, onComplete }) => {
     };
 
     const getIsNextDisabled = (currentStep) => {
-        if (currentStep === 1) return !referral;
-        if (currentStep === 2) return selectedGenres.length === 0;
+        if (currentStep === 1) return !displayName.trim();
+        if (currentStep === 2) return !referral;
+        if (currentStep === 3) return selectedGenres.length === 0;
         return false;
     };
 
@@ -49,6 +52,27 @@ const OnboardingModal = ({ user, onComplete }) => {
                     backButtonText="Previous"
                     nextButtonText="Continue"
                 >
+                    <Step>
+                        <div style={{ minHeight: '280px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                            <h2 className="modal-title">What should we call you?</h2>
+                            <p className="modal-message">Enter your name or nickname to personalize your experience.</p>
+                            <input
+                                type="text"
+                                className="auth-input"
+                                placeholder="E.g., Dan"
+                                style={{
+                                    width: '100%',
+                                    maxWidth: '400px',
+                                    marginTop: '20px',
+                                    textAlign: 'center',
+                                    fontSize: '1.1rem'
+                                }}
+                                value={displayName}
+                                onChange={(e) => setDisplayName(e.target.value)}
+                            />
+                        </div>
+                    </Step>
+
                     <Step>
                         <div style={{ minHeight: '280px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <h2 className="modal-title">Welcome to DanStream!</h2>
