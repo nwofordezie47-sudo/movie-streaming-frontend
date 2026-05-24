@@ -11,6 +11,7 @@ const MovieCard = ({ movie, onSelect }) => {
 
     const isInList = user?.myList?.some(item => {
         const itemId = item?._id || item; // If populated, use _id. Else, it is the ID itself.
+        if (!itemId) return false;
         return itemId.toString() === movie._id.toString();
     });
 

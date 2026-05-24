@@ -34,6 +34,7 @@ const MovieDetails = ({ movie, onBack, onPlay }) => {
 
     const isInList = user?.myList?.some(item => {
         const itemId = item?._id || item;
+        if (!itemId) return false;
         return itemId.toString() === movie._id.toString();
     });
 
