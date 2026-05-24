@@ -63,14 +63,6 @@ const WelcomeMessage = () => {
                     We've curated some fresh titles for your session today.
                 </p>
             </div>
-            {user.lastLogin && (
-                <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    <div>Active Session</div>
-                    <div style={{ color: 'var(--cream)', fontWeight: '500', marginTop: '2px' }}>
-                        {new Date(user.lastLogin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
