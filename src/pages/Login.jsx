@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { ToastContext } from '../context/ToastContext';
 import Modal from '../components/Modal';
 import './Auth.css';
 
@@ -10,6 +11,7 @@ const Login = () => {
     const [isSocialLoading, setIsSocialLoading] = useState(false);
     const [modalState, setModalState] = useState({ isOpen: false, title: '', message: '', type: 'info' });
     const { login, googleLogin, appleLogin } = useContext(AuthContext);
+    const { showToast } = useContext(ToastContext);
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +66,7 @@ const Login = () => {
                                 title: 'Authentication Failed',
                                 message: err.response?.data?.message || 'Could not authenticate with Google.',
                                 type: 'error'
-                            });
+                              });
                         }
                     } else {
                         console.error("No access token returned from Google popup");
@@ -83,45 +85,8 @@ const Login = () => {
         }
     };
 
-    const handleAppleSignIn = async () => {
-        if (isSocialLoading) return;
-        if (!window.AppleID) {
-            console.error("Apple SDK not loaded");
-            setModalState({
-                isOpen: true,
-                title: 'Authentication Failed',
-                message: 'Apple Sign-In SDK is not loaded. Please refresh the page.',
-                type: 'error'
-            });
-            return;
-        }
-
-        setIsSocialLoading(true);
-        try {
-            window.AppleID.auth.init({
-                clientId: import.meta.env.VITE_APPLE_CLIENT_ID,
-                scope: 'name email',
-                redirectURI: import.meta.env.VITE_APPLE_REDIRECT_URI || window.location.origin,
-                usePopup: true
-            });
-            const response = await window.AppleID.auth.signIn();
-            if (response && response.authorization && response.authorization.id_token) {
-                await appleLogin(response.authorization.id_token);
-                navigate('/movies');
-            } else {
-                console.error("Apple sign-in did not return id_token");
-            }
-        } catch (err) {
-            console.error("Apple sign-in error:", err);
-            setModalState({
-                isOpen: true,
-                title: 'Authentication Failed',
-                message: 'Apple Sign-In was cancelled or failed.',
-                type: 'error'
-            });
-        } finally {
-            setIsSocialLoading(false);
-        }
+    const handleAppleSignIn = () => {
+        showToast('Apple Sign-In is coming soon!', 'info');
     };
 
     return (
